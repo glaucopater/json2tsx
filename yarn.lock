@@ -392,6 +392,11 @@ tiny-inflate@^1.0.0:
   resolved "https://registry.yarnpkg.com/tiny-inflate/-/tiny-inflate-1.0.3.tgz#122715494913a1805166aaf7c93467933eea26c4"
   integrity sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==
 
+ts-transformer-keys@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/ts-transformer-keys/-/ts-transformer-keys-0.4.1.tgz#209a07caea19cf6258ee2e159d5ad20982d8bb5d"
+  integrity sha512-CahLCOHt6MS8Sixz5cU8XovuKOoP6hnQd91pxG3a7iuuLsdrbWLveQvKi7d/FJjRhEtVELp3bMnqvSpm+nCgKw==
+
 type-check@~0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/type-check/-/type-check-0.3.2.tgz#5884cab512cf1d355e3fb784f30804b2b520db72"

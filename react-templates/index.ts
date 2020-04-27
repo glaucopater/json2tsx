@@ -1,5 +1,5 @@
 const transformImport = (importChildStatement: string[]) =>
-    (importChildStatement.map(item => `import ${item} from "./${item}";`));
+    (importChildStatement.map(item => `import ${item} from "./${item}";`).join("\r"));
 
 export const functionalComponentTemplate = (
     { importChildStatement, name, props }:

@@ -1,16 +1,15 @@
 import { main } from "./lib/quicktype";
-
-//load to be passed through command line or file 
-import data from "./json_samples/iss-now.json";
-
+import fs from "fs";
 import { functionalComponentTemplate } from "./react-templates/";
 import { pascalCase, writeFile, createOutputDir, getPrettiefiedJsx } from "./utils";
 
-const transformProps = (props: object | string) => {
+const transformProps = (props: object | string | undefined) => {
+  if (!props)
+    return "";
   if (typeof props === "string")
     return props;
   const result = Object.entries(props).map(([key, value]) => {
-    return `<div>${key}:{${value}}</div>`;
+    return `<div>${key}:{props.${key}}</div>`;
   })
   return result.join("\r");
 }
@@ -18,18 +17,34 @@ const transformProps = (props: object | string) => {
 //template should be in a file
 const getTemplate = ({ importChildStatement, name, props }:
   { importChildStatement: string[], name: string, props: string | object }) => {
-  return functionalComponentTemplate({ importChildStatement: importChildStatement, name: name, props: transformProps(props) });
+  return functionalComponentTemplate({
+    importChildStatement: importChildStatement,
+    name: name,
+    props: transformProps(props)
+  });
 };
 
-const getComponent = (props: any) => {
+
+const parseSubTree = (key: string, value: object, importChildStatement: string[], children: string[]) => {
+  const componentName = pascalCase(key);
+  importChildStatement.push(componentName);
+  const childComponent = getTemplate({ name: componentName, props: value!, importChildStatement: [] });
+  children.push(childComponent);
+  writeFile(`${componentName}.tsx`, getPrettiefiedJsx(childComponent));
+  return `<${componentName} {...props.${key}}/>`;
+}
+
+
+const getComponent = (props: object | object[]) => {
   let importChildStatement: string[] = [];
   let children: string[] = [];
   const result = Object.entries(props).map((prop) => {
     const [key, value] = prop;
     if (typeof value === "object") {
       const componentName = pascalCase(key);
+      const val = value!.constructor === Array ? value[0] : value
       importChildStatement.push(componentName);
-      const childComponent = getTemplate({ name: componentName, props: value!, importChildStatement: [] });
+      const childComponent = getTemplate({ name: componentName, props: val, importChildStatement: [] });
       children.push(childComponent);
       writeFile(`${componentName}.tsx`, getPrettiefiedJsx(childComponent));
       return `<${componentName} {...props.${key}}/>`;
@@ -56,30 +71,25 @@ const CreateApp = (props: any) => {
   return result;
 };
 
-//generate types/interface file ❌
+const versionKeywords = ["-v", "-ver", "--ver", "--version"];
 
-const jsonTest = {
-  message: "success",
-  iss_position: {
-    latitude: "-46.4573",
-    longitude: "168.0903",
-  },
-  timestamp: 1550670322,
-};
+if (process.argv[2] && versionKeywords.includes(process.argv[2])) {
+  const { name, version } = require("./package.json");
+  console.log(`${name} version: ${version}`);
+} else if (process.argv[2] && fs.existsSync(process.argv[2])) {
+  const jsonData = require(process.argv[2]);
+  createOutputDir();
+  //this should create type file
+  main(JSON.stringify(jsonData))
 
+  console.log(jsonData.constructor);
+  const data = (jsonData.constructor === Array) ? jsonData[0] : jsonData
+  const component = CreateApp(data);
+  writeFile("App.tsx", getPrettiefiedJsx(component));
 
-createOutputDir();
-
-//this should create type file
-main(JSON.stringify(jsonTest))
-
-//load after type infer step
-//import { Iss } from "./output/types.ts";
-
-//import data ✔️
-//console.log(CreateApp(data));
+}
+else {
+  console.log("wrong input parameters");
+}
 
 
-//main
-const component = CreateApp(data);
-writeFile("App.tsx", getPrettiefiedJsx(component));
