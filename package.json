@@ -1,21 +1,22 @@
 {
   "name": "json2tsx",
   "version": "1.0.0",
-  "description": "A node module to convert json objects to typescript react components",
+  "description": "A node module to convert json objects into typescript react components",
   "main": "index.js",
   "repository": "https://github.com/glaucopater/json2tsx",
   "author": "Glauco Pater",
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@types/prettier": "^2.0.0",
+    "@types/prettier": "^2.0.2",
+    "npm-check-updates": "^7.1.1",
     "prettier": "^2.0.5",
-    "quicktype-core": "^6.0.56",
-    "ts-transformer-keys": "^0.4.1",
-    "typescript": "^3.8.3"
+    "quicktype-core": "^6.0.68",
+    "ts-transformer-keys": "^0.4.2",
+    "typescript": "^3.9.7"
   },
   "devDependencies": {
-    "@types/node": "^13.13.2"
+    "@types/node": "^14.0.27"
   },
   "scripts": {
     "build": "tsc"
